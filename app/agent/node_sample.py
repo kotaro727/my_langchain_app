@@ -76,3 +76,9 @@ workflow.add_conditional_edges(
         False: "answering"
     }
 )
+
+# コンパイル
+app = workflow.compile()
+
+# 実行
+app.invoke({"query": "あなたは誰ですか？"})
