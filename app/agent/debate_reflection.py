@@ -53,7 +53,8 @@ def researcher_node(state: DebateReflectionState):
 
 def pro_debater_node(state: DebateReflectionState):
     """肯定側のディベーターとして振る舞います。"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+    # ★ハルシネーション（嘘）を極限まで抑えるため、創造性(temperature)を0.1まで下げる
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.1)
     
     system_prompt = f"""あなたは競技ディベートの「肯定側（賛成派）」エージェントです。
 以下の議題について、肯定側の立場から強力で論理的な主張を行ってください。
@@ -66,7 +67,7 @@ def pro_debater_node(state: DebateReflectionState):
 【重要な指示】
 1. もし直前に「否定側」からの反論がある場合は、必ずその否定側の主張の弱点や論理の穴を指摘し、直接的に再反論してください。
 2. 簡潔かつ説得力のある論理を展開してください。
-3. **【ハルシネーション（捏造）の絶対禁止】** 主張の根拠は、必ず上記の【リサーチデータ】に記載されている事実のみを使用してください。架空のデータや事例を作り出すことは厳禁です。
+3. **【⚠️ ハルシネーションの絶対禁止 ⚠️】 あなたの知識ベース（事前知識）は一切使用してはいけません。** 主張の根拠は、100%完全に上記の【リサーチデータ】に記載されている事実のみに限定してください。データにない推論や一般論を語ることは禁止です。データが不足している場合は「推論」せず、データにある範囲の事実のみから最も合理的な主張を組み立ててください。
 4. **【出典の明記】** リサーチデータの内容を引用・参照する場合は、必ず文中に `[出典 1]` のように参照元を明記してください。
 """
     messages = [SystemMessage(content=system_prompt)] + state["messages"]
@@ -84,7 +85,8 @@ def pro_debater_node(state: DebateReflectionState):
 
 def con_debater_node(state: DebateReflectionState):
     """否定側のディベーターとして振る舞います。"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+    # ★ハルシネーション（嘘）を極限まで抑えるため、創造性(temperature)を0.1まで下げる
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.1)
     
     system_prompt = f"""あなたは競技ディベートの「否定側（反対派）」エージェントです。
 以下の議題について、否定側の立場から強力で論理的な主張や、肯定側への反論を行ってください。
@@ -97,7 +99,7 @@ def con_debater_node(state: DebateReflectionState):
 簡潔かつ説得力のある論理を展開し、一つ前の肯定側の主張に対する反論を必ず含めてください。
 
 【重要な指示】
-1. **【ハルシネーション（捏造）の絶対禁止】** 主張の根拠は、必ず上記の【リサーチデータ】に記載されている事実のみを使用してください。架空のデータや事例を作り出すことは厳禁です。
+1. **【⚠️ ハルシネーションの絶対禁止 ⚠️】 あなたの知識ベース（事前知識）は一切使用してはいけません。** 主張の根拠は、100%完全に上記の【リサーチデータ】に記載されている事実のみに限定してください。データにない推論や一般論を語ることは禁止です。データが不足している場合は「推論」せず、データにある範囲の事実のみから最も合理的な反論を組み立ててください。
 2. **【出典の明記】** リサーチデータの内容を引用・参照する場合は、必ず文中に `[出典 1]` のように参照元を明記してください。
 """
     messages = [SystemMessage(content=system_prompt)] + state["messages"]
