@@ -47,17 +47,20 @@ def researcher_node(state: DebateState):
 def pro_debater_node(state: DebateState):
     """肯定側のディベーターとして振る舞います。"""
     # ディベートの多様な切り口や創造的な反論を引き出すため、temperatureを少し高め(0.7)に設定
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
     
     system_prompt = f"""あなたは競技ディベートの「肯定側（賛成派）」エージェントです。
-以下の議題について、肯定側の立場から強力で論理的な主張や、否定側への反論を行ってください。
+以下の議題について、肯定側の立場から強力で論理的な主張を行ってください。
 
 【議題】: {state['topic']}
 
 【リサーチデータ】（客観的事実として活用してください）:
 {state['research_data']}
 
-簡潔かつ説得力のある論理を展開してください。
+【重要な指示】
+1. もし直前に「否定側」からの反論（メッセージ）がある場合は、**必ずその否定側の主張の弱点や論理の穴を指摘し、直接的に再反論**してください。
+2. 自分の最初の主張ばかりを繰り返す（固執する）のではなく、相手の意見を踏まえた上で、なぜそれでも肯定側が正しいのかを論理的に展開してください。
+3. 簡潔かつ説得力のある論理を展開してください。
 """
     
     messages = [SystemMessage(content=system_prompt)] + state["messages"]
@@ -72,7 +75,7 @@ def pro_debater_node(state: DebateState):
 def con_debater_node(state: DebateState):
     """否定側のディベーターとして振る舞います。"""
     # 肯定側と同様に、多様な反論や創造的な主張を引き出すためtemperature=0.7に設定
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
     
     system_prompt = f"""あなたは競技ディベートの「否定側（反対派）」エージェントです。
 以下の議題について、否定側の立場から強力で論理的な主張や、肯定側への反論を行ってください。
@@ -99,7 +102,7 @@ def con_debater_node(state: DebateState):
 def judge_node(state: DebateState):
     """ディベートを評価する審判として振る舞います。"""
     # 審判は客観的かつ一貫性のある論理的な評価が求められるため、temperatureを低め(0.2)に設定して出力を安定させる
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.2)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
     
     system_prompt = f"""あなたは競技ディベートの「審判（ジャッジ）」エージェントです。
 以下の議題についての肯定側と否定側のディベート内容を読み、どちらの論理がより妥当であったかを客観的に判定してください。

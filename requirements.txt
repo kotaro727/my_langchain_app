@@ -18,3 +18,7 @@ rank-bm25
 ragas
 nest-asyncio
 rapidfuzz
+
+# Web UI
+streamlit
+langchain-tavily
